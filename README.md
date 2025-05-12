@@ -37,3 +37,7 @@ and construct the SPQR-tree.
 5: If Code(G1) = Code(G2) G1 is isomorphic to G2"
 
 [GeeksforGeeks: Backtracking](https://www.geeksforgeeks.org/backtracking-algorithms/)
+
+[Mapping](https://en.wikipedia.org/wiki/Map_(higher-order_function))
+
+
