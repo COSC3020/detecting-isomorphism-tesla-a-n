@@ -40,4 +40,6 @@ and construct the SPQR-tree.
 
 [Mapping](https://en.wikipedia.org/wiki/Map_(higher-order_function))
 
+[Check map contents](https://stackoverflow.com/questions/833379/checking-contents-of-a-map-in-another-map-in-java)
 
+Used CoPilot to polish are_isomorphic, backtracking, and isCompatible
