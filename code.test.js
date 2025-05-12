@@ -3,31 +3,48 @@ const jsc = require('jsverify');
 
 eval(fs.readFileSync('code.js')+'');
 
-//complete graph test createCompleteGraph
+//complete graph generator
 function createCompleteGraph(n) {
   const graph = {};
-  //generate graph here
+  for (let i = 0; i < n; i++) {
+    graph[i] = [];
+    for (let j = 0; j < n; j++) {
+      if (i !== j) {
+        graph[i].push(j);
+      }
+    }
+  }
   return graph;
 }
 
-//cycle graph test
+//cycle graph generator
 function createCycleGraph(n) {
   const graph = {};
-  //generate graph here
+  for (let i = 0; i < n; i++) {
+    graph[i] = [(i + 1) % n, (i - 1 + n) % n];
+  }
   return graph;
 }
 
-//path graph test
+//path graph generator
 function createPathGraph(n) {
   const graph = {};
-  //generate graph here
+  for (let i = 0; i < n; i++) {
+    graph[i] = [];
+    if (i > 0) graph[i].push(i - 1);
+    if (i < n - 1) graph[i].push(i + 1);
+  }
   return graph;
 }
 
 //star graph test
 function createStarGraph(n) {
   const graph = {};
-  //generate graph here
+  graph[0] = [];
+  for (let i = 1; i < n; i++) {
+    graph[0].push(i);
+    graph[i] = [0];
+  }
   return graph;
 }
 
@@ -35,7 +52,18 @@ function createStarGraph(n) {
 function relabelGraph(graph, permutation) {
     const result = {};
     const nodes = Object.keys(graph);
-    //duplicate graph here
+    
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const newLabel = permutation[i];
+        result[newLabel] = [];
+        
+        for (const neighbor of graph[node]) {
+            const neighborIndex = nodes.indexOf(neighbor);
+            result[newLabel].push(permutation[neighborIndex]);
+        }
+    }
+    
     return result;
 }
 
