@@ -3,12 +3,110 @@ const jsc = require('jsverify');
 
 eval(fs.readFileSync('code.js')+'');
 
-//complete graph test
+//complete graph test createCompleteGraph
+function createCompleteGraph(n) {
+  const graph = {};
+  //generate graph here
+  return graph;
+}
+
 //cycle graph test
+function createCycleGraph(n) {
+  const graph = {};
+  //generate graph here
+  return graph;
+}
+
 //path graph test
+function createPathGraph(n) {
+  const graph = {};
+  //generate graph here
+  return graph;
+}
+
 //star graph test
+function createStarGraph(n) {
+  const graph = {};
+  //generate graph here
+  return graph;
+}
+
 //helper function to duplicate graph (isomorphic copy)
+function relabelGraph(graph, permutation) {
+    const result = {};
+    const nodes = Object.keys(graph);
+    //duplicate graph here
+    return result;
+}
+
 //helper function to generate a random permutation
-//function to test each of the isomorphic copies (complete, cycle, path, star) are isomorphic
+// Made from functional programming experience and brute force sorting exercise
+function generatePermutation(n) {
+    const result = Array.from({ length: n }, (_, i) => i);
+    
+    for (let i = n - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+    }
+    
+    return result;
+}
+
+//test identical graphs are isomorphic
+const testIdentical = jsc.forall(jsc.integer(1, 10), size => {
+    const graph = createCompleteGraph(size);
+    return are_isomorphic(graph, graph);
+});
+
+//functions to test each of the isomorphic copies (complete, cycle, path, star) are isomorphic
+const testCompleteGraphs = jsc.forall(jsc.integer(2, 8), size => {
+    const graph1 = createCompleteGraph(size);
+    const permutation = generatePermutation(size);
+    const graph2 = relabelGraph(graph1, permutation);
+    return are_isomorphic(graph1, graph2);
+});
+
+const testCycleGraphs = jsc.forall(jsc.integer(3, 10), size => {
+    const graph1 = createCycleGraph(size);
+    const permutation = generatePermutation(size);
+    const graph2 = relabelGraph(graph1, permutation);
+    return are_isomorphic(graph1, graph2);
+});
+
+const testPathGraphs = jsc.forall(jsc.integer(2, 10), size => {
+    const graph1 = createPathGraph(size);
+    const permutation = generatePermutation(size);
+    const graph2 = relabelGraph(graph1, permutation);
+    return are_isomorphic(graph1, graph2);
+});
+
+const testStarGraphs = jsc.forall(jsc.integer(3, 10), size => {
+    const graph1 = createStarGraph(size);
+    const permutation = generatePermutation(size);
+    const graph2 = relabelGraph(graph1, permutation);
+    return are_isomorphic(graph1, graph2);
+});
+
 //function to test that different graphs are not isomorphic
-//js.verify for each test
+const testDifferentGraphs = jsc.forall(jsc.integer(4, 10), size => {
+    const completeGraph = createCompleteGraph(size);
+    const cycleGraph = createCycleGraph(size);
+    const pathGraph = createPathGraph(size);
+    const starGraph = createStarGraph(size);
+    
+    return !are_isomorphic(completeGraph, cycleGraph) &&
+           !are_isomorphic(completeGraph, pathGraph) &&
+           !are_isomorphic(completeGraph, starGraph) &&
+           !are_isomorphic(cycleGraph, pathGraph) &&
+           !are_isomorphic(cycleGraph, starGraph) &&
+           !are_isomorphic(pathGraph, starGraph);
+});
+
+jsc.assert(testIdentical);
+jsc.assert(testCompleteGraphs);
+jsc.assert(testCycleGraphs);
+jsc.assert(testPathGraphs);
+jsc.assert(testStarGraphs);
+jsc.assert(testDifferentGraphs);
+
+
