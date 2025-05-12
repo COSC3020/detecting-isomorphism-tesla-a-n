@@ -35,7 +35,7 @@ function are_isomorphic(graph1, graph2) {
     const nodesByDegree2 = getNodesByDegree(graph2);
     
     //check if degree spreds match
-     for (const degree in nodesByDegree1) {
+    for (const degree in nodesByDegree1) {
         if (!nodesByDegree2[degree] || 
             nodesByDegree1[degree].length !== nodesByDegree2[degree].length) {
             return false;
@@ -49,15 +49,43 @@ function are_isomorphic(graph1, graph2) {
     //backtrack to find valid mapping
     return backtrack(index, nodes1, graph1, graph2, nodesByDegree, map)
 }
+
     //funciton backtrack helper function takes (index, nodes, graphs, nodes by degree, map)
+function backtrack(index, nodes1, graph1, graph2, nodesByDegree2, mapping) {
     //if all nodes are mapped return true
-    //try each of the nodes of same degree from graph2
+    if (index === nodes1.length) {
+        return true;
+    }
+    
+    const node1 = nodes1[index];
+    const degree = graph1[node1].length;
+    
+    //try each of the nodes of same degree from graph2 to see if its already mapped
     //for each node of nodes by degree
-        //check if its already mapped
+    for (const node2 of nodesByDegree2[degree] || []) {
+        if (used.has(node2)) {
+            continue; // Already mapped
+        }
+        //check if its map works with existing maps
+        if (!isCompatible(node1, node2, graph1, graph2, mapping)) {
+            continue;
+        }
         //check if the mapping works with the existing mappings
         //try another mapping and make the index node1 //backtrack needs index
+        mapping[node1] = node2;
+        used.add(node2);
+        
+        if (backtrack(index + 1, nodes1, graph1, graph2, nodesByDegree2, used, mapping)) {
+            return true;
+        }
         //delete mapping of node1 index
-        //return false
+        delete mapping[node1];
+        used.delete(node2);
+    }
+    
+    return false;
+}
+
     //Check if mapping node1 to node2 is compatible with existing mappings
     //function isCompatible helper function takes (nodes, graphs, map)
         // for each mapped neighbor of node1
