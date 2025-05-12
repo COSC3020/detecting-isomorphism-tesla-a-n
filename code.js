@@ -1,11 +1,55 @@
 function are_isomorphic(graph1, graph2) {
     //Check if they have the same # of vertices
+    const nodes1 = Object.keys(graph1);
+    const nodes2 = Object.keys(graph2);
+    
+    if (nodes1.length !== nodes2.length) {
+        return false;
+    }
     //check if same # of edges
+    const countEdges = (graph) => {
+        let count = 0;
+        for (const node in graph) {
+            count += graph[node].length;
+        }
+        return count / 2; // Each edge is counted twice in an adjacency list
+    };
+    // if isomorphic, theyd have the same # of edges
+     if (countEdges(graph1) !== countEdges(graph2)) {
+        return false;
+    }
     //group nodes by degree
+    const getNodesByDegree = (graph) => {
+        const result = {};
+        for (const node in graph) {
+            const degree = graph[node].length;
+            if (!result[degree]) {
+                result[degree] = [];
+            }
+            result[degree].push(node);
+        }
+        return result;
+    };
+    
+    const nodesByDegree1 = getNodesByDegree(graph1);
+    const nodesByDegree2 = getNodesByDegree(graph2);
+    
     //check if degree spreds match
+     for (const degree in nodesByDegree1) {
+        if (!nodesByDegree2[degree] || 
+            nodesByDegree1[degree].length !== nodesByDegree2[degree].length) {
+            return false;
+        }
+    }
+    
     //use a set and a map
+    const used = new Set();
+    const mapping = {};
+
     //backtrack to find valid mapping
-    //funciton backtrack helper function takes (nodes, graphs, nodes by degree, map)
+    return backtrack(index, nodes1, graph1, graph2, nodesByDegree, map)
+}
+    //funciton backtrack helper function takes (index, nodes, graphs, nodes by degree, map)
     //if all nodes are mapped return true
     //try each of the nodes of same degree from graph2
     //for each node of nodes by degree
