@@ -86,15 +86,34 @@ function backtrack(index, nodes1, graph1, graph2, nodesByDegree2, mapping) {
     return false;
 }
 
-    //Check if mapping node1 to node2 is compatible with existing mappings
-    //function isCompatible helper function takes (nodes, graphs, map)
+//Check if mapping node1 to node2 is compatible with existing mappings
+//function isCompatible helper function takes (nodes, graphs, map)
+function isCompatible(node1, node2, graph1, graph2, mapping) {
+    const neighbors1 = graph1[node1];
+    const neighbors2 = graph2[node2];
+    
         // for each mapped neighbor of node1
-            //if neighbor is in map
-                // corresponding node in graph2 should be a neighbor of node2
-                    //return false
-        //for each neighbor of node2 that has a reverse mapping
-            // corresponding node in graph1 should be a neighbor of node1
-                //if the corresponding node in graph1 should be a neighbor of node1
-                    //if not, return false
+    for (const neighbor of neighbors1) {
+        //if neighbor is in map
+        if (neighbor in mapping) {
+            // corresponding node in graph2 should be a neighbor of node2
+            if (!neighbors2.includes(mapping[neighbor])) {
+                return false;
+            }
+        }
+    }
+    
+    //for each neighbor of node2 that has a reverse mapping
+    for (const neighbor of neighbors2) {
+        const reverseMapping = Object.keys(mapping).find(key => mapping[key] === neighbor);
+        if (reverseMapping) {
+        // corresponding node in graph1 should be a neighbor of node1
+        //if the corresponding node in graph1 should be a neighbor of node1
+            if (!neighbors1.includes(reverseMapping)) {
+                //if not, return false
+                return false;
+            }
+        }
+    }          
     return true;
 }
