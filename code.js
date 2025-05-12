@@ -6,6 +6,7 @@ function are_isomorphic(graph1, graph2) {
     if (nodes1.length !== nodes2.length) {
         return false;
     }
+    
     //check if same # of edges
     const countEdges = (graph) => {
         let count = 0;
@@ -14,10 +15,12 @@ function are_isomorphic(graph1, graph2) {
         }
         return count / 2; // Each edge is counted twice in an adjacency list
     };
+    
     // if isomorphic, theyd have the same # of edges
      if (countEdges(graph1) !== countEdges(graph2)) {
         return false;
     }
+    
     //group nodes by degree
     const getNodesByDegree = (graph) => {
         const result = {};
@@ -34,7 +37,7 @@ function are_isomorphic(graph1, graph2) {
     const nodesByDegree1 = getNodesByDegree(graph1);
     const nodesByDegree2 = getNodesByDegree(graph2);
     
-    //check if degree spreds match
+    //check if degree spreads match
     for (const degree in nodesByDegree1) {
         if (!nodesByDegree2[degree] || 
             nodesByDegree1[degree].length !== nodesByDegree2[degree].length) {
@@ -47,11 +50,11 @@ function are_isomorphic(graph1, graph2) {
     const mapping = {};
 
     //backtrack to find valid mapping
-    return backtrack(index, nodes1, graph1, graph2, nodesByDegree, map)
+    return backtrack(0, nodes1, graph1, graph2, nodesByDegree2, used, mapping);
 }
 
-    //funciton backtrack helper function takes (index, nodes, graphs, nodes by degree, map)
-function backtrack(index, nodes1, graph1, graph2, nodesByDegree2, mapping) {
+//function backtrack helper function takes (index, nodes, graphs, nodes by degree, map)
+function backtrack(index, nodes1, graph1, graph2, nodesByDegree2, used, mapping) {
     //if all nodes are mapped return true
     if (index === nodes1.length) {
         return true;
@@ -92,7 +95,7 @@ function isCompatible(node1, node2, graph1, graph2, mapping) {
     const neighbors1 = graph1[node1];
     const neighbors2 = graph2[node2];
     
-        // for each mapped neighbor of node1
+    // for each mapped neighbor of node1
     for (const neighbor of neighbors1) {
         //if neighbor is in map
         if (neighbor in mapping) {
@@ -107,13 +110,13 @@ function isCompatible(node1, node2, graph1, graph2, mapping) {
     for (const neighbor of neighbors2) {
         const reverseMapping = Object.keys(mapping).find(key => mapping[key] === neighbor);
         if (reverseMapping) {
-        // corresponding node in graph1 should be a neighbor of node1
-        //if the corresponding node in graph1 should be a neighbor of node1
+            // corresponding node in graph1 should be a neighbor of node1
+            //if the corresponding node in graph1 should be a neighbor of node1
             if (!neighbors1.includes(reverseMapping)) {
                 //if not, return false
                 return false;
             }
         }
-    }          
+    }
     return true;
 }
