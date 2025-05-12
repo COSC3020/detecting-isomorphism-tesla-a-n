@@ -43,3 +43,5 @@ and construct the SPQR-tree.
 [Check map contents](https://stackoverflow.com/questions/833379/checking-contents-of-a-map-in-another-map-in-java)
 
 Used CoPilot to polish are_isomorphic, backtracking, and isCompatible
+
+"I certify that I have listed all sources used to complete this exercise, including the use of any Large Language Models. All of the work is my own, except where stated otherwise. I am aware that plagiarism carries severe penalties and that if plagiarism is suspected, charges may be filed against me without prior notice."
