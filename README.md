@@ -35,3 +35,5 @@ of biconnected components
 and construct the SPQR-tree.
 4: Construct unique code for every SPQR-tree and in bottom-up fashion construct unique code for the biconnected tree
 5: If Code(G1) = Code(G2) G1 is isomorphic to G2"
+
+[GeeksforGeeks: Backtracking](https://www.geeksforgeeks.org/backtracking-algorithms/)
