@@ -48,13 +48,14 @@ function are_isomorphic(graph1, graph2) {
     const used = new Set();
     const mapping = {};
     
-    return backtrack(0, nodes1, graph1, graph2, nodesByDegree2, used, mapping);
+    // Start the backtracking process
+    return backtrack(nodes1, 0, graph1, graph2, nodesByDegree2, used, mapping);
 }
 
 /**
  * Backtracking helper function to find a valid mapping
  */
-function backtrack(index, nodes1, graph1, graph2, nodesByDegree2, used, mapping) {
+function backtrack(nodes1, index, graph1, graph2, nodesByDegree2, used, mapping) {
     // Base case: all nodes are mapped
     if (index === nodes1.length) {
         return true;
@@ -78,7 +79,7 @@ function backtrack(index, nodes1, graph1, graph2, nodesByDegree2, used, mapping)
         mapping[node1] = node2;
         used.add(node2);
         
-        if (backtrack(index + 1, nodes1, graph1, graph2, nodesByDegree2, used, mapping)) {
+        if (backtrack(nodes1, index + 1, graph1, graph2, nodesByDegree2, used, mapping)) {
             return true;
         }
         
@@ -97,21 +98,28 @@ function isCompatible(node1, node2, graph1, graph2, mapping) {
     const neighbors1 = graph1[node1];
     const neighbors2 = graph2[node2];
     
-    // Check if neighbors mapped so far are compatible
+    // For each already mapped neighbor of node1, check if the corresponding 
+    // mapped node is a neighbor of node2
     for (const neighbor of neighbors1) {
-        if (neighbor in mapping) {
-            const mappedNeighbor = mapping[neighbor];
-            if (!neighbors2.includes(mappedNeighbor)) {
+        if (mapping[neighbor] !== undefined) {
+            // If neighbor is mapped to mapping[neighbor], then node2 should be connected
+            // to mapping[neighbor] for this mapping to be consistent
+            if (!graph2[node2].includes(mapping[neighbor])) {
                 return false;
             }
         }
     }
-
-    // Check reverse mapping for neighbors of node2
+    
+    // For each neighbor of node2, check if the corresponding reverse mapping
+    // is a neighbor of node1
     for (const neighbor of neighbors2) {
-        const reverseMapping = Object.keys(mapping).find(key => mapping[key] === neighbor);
+        // Find if any node in graph1 is mapped to this neighbor
+        const reverseMapping = Object.entries(mapping).find(([_, val]) => val === neighbor);
         if (reverseMapping) {
-            if (!neighbors1.includes(reverseMapping)) {
+            const [originalNode] = reverseMapping;
+            // If originalNode is mapped to neighbor, then node1 should be connected
+            // to originalNode for this mapping to be consistent
+            if (!graph1[node1].includes(originalNode)) {
                 return false;
             }
         }
