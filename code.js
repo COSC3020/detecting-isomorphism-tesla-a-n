@@ -97,21 +97,20 @@ function isCompatible(node1, node2, graph1, graph2, mapping) {
     const neighbors1 = graph1[node1];
     const neighbors2 = graph2[node2];
     
-    // For each already mapped neighbor of node1
+    // Check if neighbors mapped so far are compatible
     for (const neighbor of neighbors1) {
         if (neighbor in mapping) {
-            // The corresponding node in graph2 should be a neighbor of node2
-            if (!neighbors2.includes(mapping[neighbor])) {
+            const mappedNeighbor = mapping[neighbor];
+            if (!neighbors2.includes(mappedNeighbor)) {
                 return false;
             }
         }
     }
-    
-    // For each neighbor of node2 that has a reverse mapping
+
+    // Check reverse mapping for neighbors of node2
     for (const neighbor of neighbors2) {
         const reverseMapping = Object.keys(mapping).find(key => mapping[key] === neighbor);
         if (reverseMapping) {
-            // The corresponding node in graph1 should be a neighbor of node1
             if (!neighbors1.includes(reverseMapping)) {
                 return false;
             }
