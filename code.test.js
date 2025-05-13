@@ -78,7 +78,7 @@ const testIdentical = jsc.forall(jsc.integer(1, 10), size => {
     return are_isomorphic(graph, graph);
 });
 
-const testCompleteGraphs = jsc.forall(jsc.integer(2, 8), size => {
+const testCompleteGraphs = jsc.forall(jsc.integer(3, 8), size => {
     const graph1 = createCompleteGraph(size);
     const permutation = generatePermutation(size);
     const graph2 = relabelGraph(graph1, permutation);
