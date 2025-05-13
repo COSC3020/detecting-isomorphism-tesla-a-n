@@ -92,12 +92,12 @@ const testCycleGraphs = jsc.forall(jsc.integer(3, 10), size => {
     return are_isomorphic(graph1, graph2);
 });
 
-/*const testPathGraphs = jsc.forall(jsc.integer(2, 10), size => {
+const testPathGraphs = jsc.forall(jsc.integer(2, 10), size => {
     const graph1 = createPathGraph(size);
     const permutation = generatePermutation(size);
     const graph2 = relabelGraph(graph1, permutation);
     return are_isomorphic(graph1, graph2);
-});*/
+});
 
 const testStarGraphs = jsc.forall(jsc.integer(3, 10), size => {
     const graph1 = createStarGraph(size);
@@ -120,9 +120,27 @@ const testDifferentGraphs = jsc.forall(jsc.integer(4, 10), size => {
            !are_isomorphic(pathGraph, starGraph);
 });
 
-jsc.assert(testIdentical);
-jsc.assert(testCompleteGraphs);
-jsc.assert(testCycleGraphs);
-jsc.assert(testPathGraphs);
-jsc.assert(testStarGraphs);
-jsc.assert(testDifferentGraphs);
+try {
+    console.log("Testing identical graphs...");
+    jsc.assert(testIdentical);
+    
+    console.log("Testing complete graphs...");
+    jsc.assert(testCompleteGraphs);
+    
+    console.log("Testing cycle graphs...");
+    jsc.assert(testCycleGraphs);
+    
+    console.log("Testing path graphs...");
+    jsc.assert(testPathGraphs);
+    
+    console.log("Testing star graphs...");
+    jsc.assert(testStarGraphs);
+    
+    console.log("Testing different graphs...");
+    jsc.assert(testDifferentGraphs);
+    
+    console.log("All tests passed!");
+} catch (error) {
+    console.error("Test failed:", error);
+    process.exit(1);
+}
