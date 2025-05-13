@@ -16,6 +16,22 @@ the function and run automatically when you commit through a GitHub action.
 
 What is the worst-case big $\Theta$ time complexity of your algorithm?
 
+Initial checks (vertices and edges count):
+
+Counting vertices: O(V) where V is the number of vertices
+Counting edges: O(E) where E is the number of edges
+
+Grouping nodes by degree: Iterating through all nodes and sorting them by degree: O(V + V log V)
+
+Comparing degree distributions: Sorting degrees: O(D log D) where D is the number of unique degrees
+Comparing degree distributions: O(D)
+Since D ≤ V, this is effectively O(V log V) in the worst case
+
+Backtracking algorithm: In the worst case, this is essentially trying all possible mappings between nodes of the same degree
+When all nodes have the same degree (like in a complete graph), this becomes trying all permutations: O(V!)
+
+Despite the optimizations I tried, the worst-case complexity is $\Theta(V!)$
+
 ## Sources
 
 [GeeksforGeeks: Graph Isomorphisms and Connectivity](https://www.geeksforgeeks.org/graph-isomorphisms-connectivity/#)
