@@ -18,13 +18,16 @@ function are_isomorphic(graph1, graph2) {
         }
         return groups;
     }
+    
     const degGroups1 = groupByDegree(graph1);
     const degGroups2 = groupByDegree(graph2);
 
-    // Check if degree spreads match
-    const degs1 = Object.keys(degGroups1).sort();
-    const degs2 = Object.keys(degGroups2).sort();
+    // Check if degree distributions match
+    const degs1 = Object.keys(degGroups1).sort((a, b) => a - b);
+    const degs2 = Object.keys(degGroups2).sort((a, b) => a - b);
+    
     if (degs1.length !== degs2.length) return false;
+    
     for (let i = 0; i < degs1.length; i++) {
         if (degs1[i] !== degs2[i] || degGroups1[degs1[i]].length !== degGroups2[degs2[i]].length) {
             return false;
@@ -34,47 +37,62 @@ function are_isomorphic(graph1, graph2) {
     // Helper: check if mapping is compatible
     function isCompatible(node1, node2, mapping, reverseMapping) {
         for (const nbr1 of graph1[node1]) {
-            if (mapping.hasOwnProperty(nbr1)) {
+            if (nbr1 in mapping) {
                 const mappedNbr2 = mapping[nbr1];
                 if (!graph2[node2].includes(mappedNbr2)) return false;
             }
         }
+        
         for (const nbr2 of graph2[node2]) {
-            if (reverseMapping.hasOwnProperty(nbr2)) {
+            if (nbr2 in reverseMapping) {
                 const mappedNbr1 = reverseMapping[nbr2];
                 if (!graph1[node1].includes(mappedNbr1)) return false;
             }
         }
+        
         return true;
     }
 
     // Backtracking search for valid mapping
-    function backtrack(mapping, reverseMapping, unmappedDegrees) {
+    function backtrack(mapping, reverseMapping) {
         if (Object.keys(mapping).length === nodes1.length) return true;
 
-        // Pick a degree group with unmapped nodes
-        for (const deg of degs1) {
-            const group1 = degGroups1[deg].filter(n => !mapping.hasOwnProperty(n));
-            if (group1.length === 0) continue;
-            const group2 = degGroups2[deg].filter(n => !reverseMapping.hasOwnProperty(n));
-            if (group1.length !== group2.length) return false;
-
-            // Try to map the first unmapped node in this group
-            const node1 = group1[0];
-            for (const node2 of group2) {
-                if (reverseMapping.hasOwnProperty(node2)) continue;
-                if (!isCompatible(node1, node2, mapping, reverseMapping)) continue;
-
-                mapping[node1] = node2;
-                reverseMapping[node2] = node1;
-                if (backtrack(mapping, reverseMapping, unmappedDegrees)) return true;
-                delete mapping[node1];
-                delete reverseMapping[node2];
+        // Find an unmapped node with lowest possible options
+        let bestNode = null;
+        let minOptions = Infinity;
+        
+        for (const node1 of nodes1) {
+            if (node1 in mapping) continue;
+            
+            const deg = graph1[node1].length;
+            const options = degGroups2[deg].filter(n => !(n in reverseMapping)).length;
+            
+            if (options < minOptions) {
+                minOptions = options;
+                bestNode = node1;
             }
-            return false; // No mapping worked for node1
         }
+        
+        if (bestNode === null) return false;
+        
+        // Try mapping this node to compatible nodes of same degree
+        const deg = graph1[bestNode].length;
+        const candidates = degGroups2[deg].filter(n => !(n in reverseMapping));
+        
+        for (const node2 of candidates) {
+            if (!isCompatible(bestNode, node2, mapping, reverseMapping)) continue;
+            
+            mapping[bestNode] = node2;
+            reverseMapping[node2] = bestNode;
+            
+            if (backtrack(mapping, reverseMapping)) return true;
+            
+            delete mapping[bestNode];
+            delete reverseMapping[node2];
+        }
+        
         return false;
     }
 
-    return backtrack({}, {}, degs1);
+    return backtrack({}, {});
 }
