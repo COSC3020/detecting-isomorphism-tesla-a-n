@@ -3,52 +3,47 @@ const jsc = require('jsverify');
 
 eval(fs.readFileSync('code.js')+'');
 
-//complete graph generator
 function createCompleteGraph(n) {
-  const graph = {};
-  for (let i = 0; i < n; i++) {
-    graph[i] = [];
-    for (let j = 0; j < n; j++) {
-      if (i !== j) {
-        graph[i].push(j);
-      }
+    const graph = {};
+    for (let i = 0; i < n; i++) {
+        graph[i] = [];
+        for (let j = 0; j < n; j++) {
+            if (i !== j) {
+                graph[i].push(j);
+            }
+        }
     }
-  }
-  return graph;
+    return graph;
 }
 
-//cycle graph generator
 function createCycleGraph(n) {
-  const graph = {};
-  for (let i = 0; i < n; i++) {
-    graph[i] = [(i + 1) % n, (i - 1 + n) % n];
-  }
-  return graph;
+    const graph = {};
+    for (let i = 0; i < n; i++) {
+        graph[i] = [(i + 1) % n, (i - 1 + n) % n];
+    }
+    return graph;
 }
 
-//path graph generator
 function createPathGraph(n) {
-  const graph = {};
-  for (let i = 0; i < n; i++) {
-    graph[i] = [];
-    if (i > 0) graph[i].push(i - 1);
-    if (i < n - 1) graph[i].push(i + 1);
-  }
-  return graph;
+    const graph = {};
+    for (let i = 0; i < n; i++) {
+        graph[i] = [];
+        if (i > 0) graph[i].push(i - 1);
+        if (i < n - 1) graph[i].push(i + 1);
+    }
+    return graph;
 }
 
-//star graph test
 function createStarGraph(n) {
-  const graph = {};
-  graph[0] = [];
-  for (let i = 1; i < n; i++) {
-    graph[0].push(i);
-    graph[i] = [0];
-  }
-  return graph;
+    const graph = {};
+    graph[0] = [];
+    for (let i = 1; i < n; i++) {
+        graph[0].push(i);
+        graph[i] = [0];
+    }
+    return graph;
 }
 
-//helper function to duplicate graph (isomorphic copy)
 function relabelGraph(graph, permutation) {
     const result = {};
     const nodes = Object.keys(graph);
@@ -67,8 +62,6 @@ function relabelGraph(graph, permutation) {
     return result;
 }
 
-//helper function to generate a random permutation
-// Made from functional programming experience and brute force sorting exercise
 function generatePermutation(n) {
     const result = Array.from({ length: n }, (_, i) => i);
     
@@ -80,13 +73,11 @@ function generatePermutation(n) {
     return result;
 }
 
-//test identical graphs are isomorphic
 const testIdentical = jsc.forall(jsc.integer(1, 10), size => {
     const graph = createCompleteGraph(size);
     return are_isomorphic(graph, graph);
 });
 
-//functions to test each of the isomorphic copies (complete, cycle, path, star) are isomorphic
 const testCompleteGraphs = jsc.forall(jsc.integer(2, 8), size => {
     const graph1 = createCompleteGraph(size);
     const permutation = generatePermutation(size);
@@ -115,7 +106,6 @@ const testStarGraphs = jsc.forall(jsc.integer(3, 10), size => {
     return are_isomorphic(graph1, graph2);
 });
 
-//function to test that different graphs are not isomorphic
 const testDifferentGraphs = jsc.forall(jsc.integer(4, 10), size => {
     const completeGraph = createCompleteGraph(size);
     const cycleGraph = createCycleGraph(size);
@@ -136,5 +126,3 @@ jsc.assert(testCycleGraphs);
 jsc.assert(testPathGraphs);
 jsc.assert(testStarGraphs);
 jsc.assert(testDifferentGraphs);
-
-
