@@ -1,7 +1,7 @@
 const fs = require('fs');
 const jsc = require('jsverify');
 
-eval(fs.readFileSync('detecting_isomorphism.js')+'');
+eval(fs.readFileSync('code.js')+'');
 
 function createCompleteGraph(n) {
     const graph = {};
