@@ -46,16 +46,19 @@ function createStarGraph(n) {
 
 function relabelGraph(graph, permutation) {
     const result = {};
-    const nodes = Object.keys(graph);
     
-    for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        const newLabel = permutation[i];
-        result[newLabel] = [];
+    // Create new empty adjacency lists
+    for (let i = 0; i < permutation.length; i++) {
+        result[permutation[i]] = [];
+    }
+    
+    // Map each edge
+    for (const oldNode in graph) {
+        const newNode = permutation[parseInt(oldNode)];
         
-        for (const neighbor of graph[node]) {
-            const neighborIndex = nodes.indexOf(neighbor);
-            result[newLabel].push(permutation[neighborIndex]);
+        for (const oldNeighbor of graph[oldNode]) {
+            const newNeighbor = permutation[oldNeighbor];
+            result[newNode].push(newNeighbor);
         }
     }
     
