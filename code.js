@@ -23,8 +23,8 @@ function are_isomorphic(graph1, graph2) {
     const degGroups2 = groupByDegree(graph2);
 
     // Check if degree distributions match
-    const degs1 = Object.keys(degGroups1).sort((a, b) => a - b);
-    const degs2 = Object.keys(degGroups2).sort((a, b) => a - b);
+    const degs1 = Object.keys(degGroups1).sort((a, b) => Number(a) - Number(b));
+    const degs2 = Object.keys(degGroups2).sort((a, b) => Number(a) - Number(b));
     
     if (degs1.length !== degs2.length) return false;
     
@@ -39,14 +39,18 @@ function are_isomorphic(graph1, graph2) {
         for (const nbr1 of graph1[node1]) {
             if (nbr1 in mapping) {
                 const mappedNbr2 = mapping[nbr1];
-                if (!graph2[node2].includes(mappedNbr2)) return false;
+                if (!graph2[node2].includes(mappedNbr2) && !graph2[node2].includes(String(mappedNbr2))) {
+                    return false;
+                }
             }
         }
         
         for (const nbr2 of graph2[node2]) {
             if (nbr2 in reverseMapping) {
                 const mappedNbr1 = reverseMapping[nbr2];
-                if (!graph1[node1].includes(mappedNbr1)) return false;
+                if (!graph1[node1].includes(mappedNbr1) && !graph1[node1].includes(String(mappedNbr1))) {
+                    return false;
+                }
             }
         }
         
