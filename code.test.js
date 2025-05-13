@@ -43,22 +43,30 @@ function createStarGraph(n) {
     }
     return graph;
 }
-
 function relabelGraph(graph, permutation) {
-    const result = {};
+    if (!graph) throw new Error('relabelGraph: graph is null or undefined');
+    if (!permutation) throw new Error('relabelGraph: permutation is null or undefined');
     
-    // Create new empty adjacency lists
-    for (let i = 0; i < permutation.length; i++) {
-        result[permutation[i]] = [];
+    const result = {};
+    const nodes = Object.keys(graph);
+    
+    if (nodes.length !== permutation.length) {
+        throw new Error('relabelGraph: graph and permutation have different lengths');
     }
     
-    // Map each edge
-    for (const oldNode in graph) {
-        const newNode = permutation[parseInt(oldNode)];
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const newLabel = permutation[i];
+        result[newLabel] = [];
         
-        for (const oldNeighbor of graph[oldNode]) {
-            const newNeighbor = permutation[oldNeighbor];
-            result[newNode].push(newNeighbor);
+        for (const neighbor of graph[node]) {
+            const neighborIndex = nodes.indexOf(neighbor);
+            
+            if (neighborIndex === -1) {
+                throw new Error(`relabelGraph: neighbor ${neighbor} of node ${node} is not in the graph`);
+            }
+            
+            result[newLabel].push(permutation[neighborIndex]);
         }
     }
     
